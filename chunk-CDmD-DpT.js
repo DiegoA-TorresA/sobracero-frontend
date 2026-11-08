@@ -1,0 +1,1 @@
+import{jt as mb}from"./chunk-BcoK6p8U.js";var m=new Intl.NumberFormat(`es-PE`,{style:`currency`,currency:`PEN`});var t=class r{transform(e){return e==null?`—`:m.format(e)}static ɵfac=function(i){return new(i||r)};static ɵpipe=mb({name:`soles`,type:r,pure:!0})};export{t};

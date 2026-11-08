@@ -1,0 +1,1 @@
+var t=[{path:``,title:`Notificaciones · SobraCero`,loadComponent:()=>import(`./chunk-D2TnvPqE.js`).then(o=>o.NotificacionesPage)}];export{t as NOTIFICACIONES_ROUTES};

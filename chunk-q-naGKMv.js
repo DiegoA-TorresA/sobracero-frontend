@@ -1,0 +1,1 @@
+import{jt as mb}from"./chunk-BcoK6p8U.js";var i=new Intl.NumberFormat(`es-PE`,{maximumFractionDigits:1});var m=class r{transform(t,e=!1){return t==null?`—`:e&&t>=1e3?`${i.format(t/1e3)} t`:`${i.format(t)} kg`}static ɵfac=function(e){return new(e||r)};static ɵpipe=mb({name:`kg`,type:r,pure:!0})};export{m as t};

@@ -1,0 +1,1 @@
+import{jt as mb}from"./chunk-BcoK6p8U.js";var u=class r{transform(e,n){return!e||n==null||e<=0?0:Math.round((1-n/e)*100)}static ɵfac=function(n){return new(n||r)};static ɵpipe=mb({name:`descuento`,type:r,pure:!0})};export{u as t};
