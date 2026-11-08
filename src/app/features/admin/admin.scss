@@ -1,0 +1,114 @@
+/* Estilos compartidos por las pantallas de la Parte 6 (administración). */
+.buscar {
+  min-width: min(320px, 100%);
+}
+.lista {
+  display: grid;
+  gap: 0.75rem;
+}
+.solicitud {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+.solicitud__cab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+h2 {
+  margin: 0 0.25rem 0 0;
+  font-size: 1.0625rem;
+}
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin: 0.875rem 0 0;
+}
+.datos dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-suave);
+}
+.datos dd {
+  margin: 0.125rem 0 0;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.mono {
+  font-family: ui-monospace, Consolas, monospace;
+}
+.motivo {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 0.875rem;
+}
+.solicitud__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.plan {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.plan select {
+  min-height: 34px;
+  padding: 0.25rem 0.5rem;
+  width: auto;
+}
+.sunat {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+.motivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0.75rem 0;
+}
+.chip {
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: var(--verde);
+}
+.dlg-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+@media (min-width: 900px) {
+  .solicitud {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .solicitud__acciones {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 170px;
+  }
+}

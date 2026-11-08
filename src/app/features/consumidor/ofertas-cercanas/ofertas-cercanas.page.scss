@@ -1,0 +1,110 @@
+.conmutador {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--radio);
+  background: var(--gris-claro);
+}
+.conmutador button {
+  min-height: 36px;
+  padding: 0 0.875rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--texto-suave);
+}
+.conmutador button.activo {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra-1);
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+.filtro {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.filtros__limpiar {
+  justify-self: start;
+  padding: 0.5rem 0;
+}
+.aviso-ubicacion {
+  margin: 0 0 1rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radio);
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 0.875rem;
+}
+
+.conteo {
+  margin: 0 0 0.25rem;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+.resultados__lista {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+.resultados__mapa {
+  display: none;
+}
+.resultados--mapa .resultados__lista {
+  display: none;
+}
+.resultados--mapa .resultados__mapa {
+  display: block;
+  height: calc(100vh - 340px);
+  min-height: 360px;
+}
+.vacio__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .filtros {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+}
+@media (min-width: 1100px) {
+  .conmutador {
+    display: none;
+  }
+  .resultados,
+  .resultados--mapa {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .resultados__lista,
+  .resultados--mapa .resultados__lista {
+    display: grid;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+  .resultados__mapa,
+  .resultados--mapa .resultados__mapa {
+    display: block;
+    position: sticky;
+    top: 88px;
+    height: calc(100vh - 260px);
+    min-height: 420px;
+  }
+}

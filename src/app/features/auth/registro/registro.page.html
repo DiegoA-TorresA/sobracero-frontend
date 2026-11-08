@@ -1,0 +1,138 @@
+<section class="tarjeta af af--ancho">
+  <h1>Crea tu cuenta</h1>
+  <p class="texto-suave">Elige cómo vas a usar SobraCero.</p>
+
+  <div class="roles" role="radiogroup" aria-label="Tipo de cuenta">
+    @for (r of roles; track r.valor) {
+      <button
+        type="button"
+        class="rol"
+        role="radio"
+        [attr.aria-checked]="rol() === r.valor"
+        [class.rol--activo]="rol() === r.valor"
+        (click)="elegirRol(r.valor)"
+      >
+        <span class="rol__icono" aria-hidden="true">{{ r.icono }}</span>
+        <span class="rol__nombre">{{ r.nombre }}</span>
+        <span class="rol__desc">{{ r.desc }}</span>
+      </button>
+    }
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+    <div class="campo">
+      <label for="nombre">{{ etiquetaNombre() }}</label>
+      <input id="nombre" formControlName="nombre" autocomplete="name" />
+      @if (form.controls.nombre.touched && form.controls.nombre.invalid) {
+        <small class="error">Este campo es obligatorio.</small>
+      }
+    </div>
+
+    <div class="fila">
+      <div class="campo">
+        <label for="correo">Correo</label>
+        <input id="correo" type="email" formControlName="correo" autocomplete="email" />
+        @if (form.controls.correo.touched && form.controls.correo.invalid) {
+          <small class="error">Ingresa un correo válido.</small>
+        }
+      </div>
+      <div class="campo">
+        <label for="clave">Contraseña</label>
+        <input id="clave" type="password" formControlName="clave" autocomplete="new-password" />
+        @if (form.controls.clave.touched && form.controls.clave.invalid) {
+          <small class="error">Mínimo 8 caracteres.</small>
+        }
+      </div>
+    </div>
+
+    @if (rol() === 'COMERCIO') {
+      <div class="fila">
+        <div class="campo">
+          <label for="ruc">RUC</label>
+          <input
+            id="ruc"
+            formControlName="ruc"
+            inputmode="numeric"
+            maxlength="11"
+            placeholder="20xxxxxxxxx"
+          />
+          @if (form.controls.ruc.touched && form.controls.ruc.invalid) {
+            <small class="error">El RUC debe tener 11 dígitos.</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="distrito">Distrito</label>
+          <select id="distrito" formControlName="distrito">
+            <option [ngValue]="null">Selecciona…</option>
+            @for (d of distritos; track d) {
+              <option [ngValue]="d">{{ d }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+
+    @if (esEmpresa()) {
+      <div class="campo">
+        <label for="direccion">Dirección</label>
+        <input
+          id="direccion"
+          formControlName="direccion"
+          autocomplete="street-address"
+          placeholder="Av. La Marina 2355"
+        />
+        @if (form.controls.direccion.touched && form.controls.direccion.invalid) {
+          <small class="error">La dirección es obligatoria.</small>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Ubicación en el mapa</label>
+        <app-mapa-selector (cambio)="ubicacion.set($event)" />
+        @if (ubicacion(); as u) {
+          <p class="coords">📍 {{ u.lat }}, {{ u.lng }}</p>
+        } @else if (intentoEnviar()) {
+          <small class="error">Marca la ubicación haciendo clic en el mapa.</small>
+        } @else {
+          <p class="coords">Haz clic en el mapa para marcar tu local.</p>
+        }
+      </div>
+    }
+
+    @if (rol() === 'ORGANIZACION') {
+      <div class="campo">
+        <label for="capacidad"
+          >Capacidad diaria de recojo (kg) <span class="texto-suave">— opcional</span></label
+        >
+        <input
+          id="capacidad"
+          type="number"
+          min="0"
+          step="1"
+          formControlName="capacidadDiariaKg"
+          placeholder="Ej. 40"
+        />
+      </div>
+    }
+
+    @if (esEmpresa()) {
+      <p class="aviso">
+        Tu cuenta quedará <strong>pendiente</strong> hasta que un administrador valide tus datos.
+      </p>
+    }
+
+    <label class="check">
+      <input type="checkbox" formControlName="aceptaTerminos" />
+      Acepto los términos de uso y la política de privacidad.
+    </label>
+    @if (form.controls.aceptaTerminos.touched && form.controls.aceptaTerminos.invalid) {
+      <small class="error">Debes aceptar los términos para continuar.</small>
+    }
+
+    <button type="submit" class="btn btn--primario btn--bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Creando cuenta…' : 'Crear cuenta' }}
+    </button>
+  </form>
+
+  <p class="af__pie">¿Ya tienes cuenta? <a routerLink="/autenticacion/login">Inicia sesión</a></p>
+</section>

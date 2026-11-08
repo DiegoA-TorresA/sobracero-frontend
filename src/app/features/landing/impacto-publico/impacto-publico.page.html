@@ -1,0 +1,96 @@
+<app-landing-header />
+
+<main>
+  <section class="ip-hero">
+    <div class="contenedor">
+      <p class="eyebrow">Nuestro impacto</p>
+      <h1>Cada kilo cuenta. Y lo contamos.</h1>
+      <p class="bajada">
+        Cifras en tiempo real de todo lo que comercios, consumidores y organizaciones sociales
+        evitaron que se desperdicie en Lima Metropolitana.
+      </p>
+    </div>
+  </section>
+
+  <section class="contenedor ip-cuerpo" aria-live="polite">
+    @if (impacto.isLoading()) {
+      <app-spinner texto="Calculando el impacto…" />
+    } @else if (impacto.error()) {
+      <div class="tarjeta ip-error">
+        <p>No pudimos cargar las cifras en este momento.</p>
+        <button type="button" class="btn btn--secundario" (click)="recargar()">Reintentar</button>
+      </div>
+    } @else if (impacto.value(); as i) {
+      <div class="tarjeta ip-meta">
+        <div class="ip-meta__cabecera">
+          <div>
+            <p class="ip-etiqueta">Kilos rescatados</p>
+            <p class="ip-gigante">
+              <app-contador-animado [valor]="i.rescatadoKg" [decimales]="1" /> <span>kg</span>
+            </p>
+          </div>
+          <p class="ip-meta__objetivo">
+            Meta a 3 años: <strong>{{ i.metaKg | kg: true }}</strong>
+          </p>
+        </div>
+        <div
+          class="barra"
+          role="progressbar"
+          [attr.aria-valuenow]="avance()"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-label]="'Avance hacia la meta: ' + i.avanceMetaPct + '%'"
+        >
+          <span class="barra__relleno" [style.width.%]="avance()"></span>
+        </div>
+        <p class="ip-meta__pct">{{ i.avanceMetaPct }} % de la meta</p>
+      </div>
+
+      <dl class="ip-grid">
+        <div class="tarjeta ip-m">
+          <dt>🌍 CO₂ evitado</dt>
+          <dd><app-contador-animado [valor]="i.co2EvitadoKg" [decimales]="1" /> <span>kg</span></dd>
+        </div>
+        <div class="tarjeta ip-m">
+          <dt>🏪 Comercios activos</dt>
+          <dd><app-contador-animado [valor]="i.comerciosActivos" /></dd>
+        </div>
+        <div class="tarjeta ip-m">
+          <dt>🤝 Organizaciones sociales</dt>
+          <dd><app-contador-animado [valor]="i.organizacionesActivas" /></dd>
+        </div>
+      </dl>
+
+      <div class="tarjeta ip-reparto">
+        <h2>¿Cómo se rescató?</h2>
+        <div class="reparto" aria-hidden="true">
+          <span class="reparto__venta" [style.flex-grow]="reparto().venta || 0.0001"></span>
+          <span class="reparto__dona" [style.flex-grow]="reparto().donacion || 0.0001"></span>
+        </div>
+        <ul class="leyenda">
+          <li>
+            <span class="punto punto--venta"></span>Vendido con descuento:
+            <strong>{{ i.vendidoKg | kg }}</strong> ({{ reparto().venta }} %)
+          </li>
+          <li>
+            <span class="punto punto--dona"></span>Donado a organizaciones:
+            <strong>{{ i.donadoKg | kg }}</strong> ({{ reparto().donacion }} %)
+          </li>
+        </ul>
+      </div>
+
+      <p class="ip-nota texto-suave">
+        El CO₂ evitado se estima multiplicando los kilos rescatados por el factor de emisiones
+        configurado en la plataforma. Solo se cuentan ventas recogidas y donaciones confirmadas con
+        código.
+      </p>
+
+      <div class="ip-cta">
+        <a class="btn btn--primario" routerLink="/autenticacion/registro">Súmate a SobraCero</a>
+        <a class="btn btn--secundario" routerLink="/">Volver al inicio</a>
+      </div>
+    }
+  </section>
+</main>
+
+<app-landing-footer />

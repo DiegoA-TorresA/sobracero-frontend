@@ -1,0 +1,55 @@
+<section class="tarjeta af">
+  <h1>Inicia sesión</h1>
+  <p class="texto-suave">Ingresa para reservar, publicar o recoger donaciones.</p>
+
+  <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+    <div class="campo">
+      <label for="correo">Correo</label>
+      <input
+        id="correo"
+        type="email"
+        formControlName="correo"
+        autocomplete="email"
+        placeholder="tucorreo@ejemplo.pe"
+      />
+      @if (form.controls.correo.touched && form.controls.correo.invalid) {
+        <small class="error">Ingresa un correo válido.</small>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="clave">Contraseña</label>
+      <div class="con-accion">
+        <input
+          id="clave"
+          [type]="verClave() ? 'text' : 'password'"
+          formControlName="clave"
+          autocomplete="current-password"
+        />
+        <button type="button" class="enlace" (click)="verClave.set(!verClave())">
+          {{ verClave() ? 'Ocultar' : 'Ver' }}
+        </button>
+      </div>
+      @if (form.controls.clave.touched && form.controls.clave.invalid) {
+        <small class="error">La contraseña es obligatoria.</small>
+      }
+    </div>
+
+    <button type="submit" class="btn btn--primario btn--bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Ingresando…' : 'Ingresar' }}
+    </button>
+  </form>
+
+  <p class="af__pie">¿No tienes cuenta? <a routerLink="/autenticacion/registro">Regístrate</a></p>
+
+  <details class="demo">
+    <summary>Cuentas de demostración</summary>
+    <div class="demo__lista">
+      @for (c of cuentasDemo; track c.correo) {
+        <button type="button" class="btn btn--secundario btn--sm" (click)="usarDemo(c)">
+          {{ c.rol }}
+        </button>
+      }
+    </div>
+  </details>
+</section>

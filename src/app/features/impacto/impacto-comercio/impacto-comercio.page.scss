@@ -1,0 +1,89 @@
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 1000px) {
+  .metricas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+.reparto {
+  margin-bottom: 1rem;
+}
+.barra {
+  display: flex;
+  gap: 3px;
+  height: 20px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--gris-claro);
+}
+.b-venta {
+  background: var(--naranja);
+}
+.b-dona {
+  background: var(--verde);
+}
+.b-pierde {
+  background: var(--rojo);
+}
+.leyenda {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+.leyenda i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  vertical-align: -1px;
+}
+.distintivo {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.distintivo--ok {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: #6ee7b7;
+}
+.medalla {
+  font-size: 3.5rem;
+  filter: grayscale(0.6);
+}
+.distintivo--ok .medalla {
+  filter: none;
+}
+.distintivo__texto {
+  flex: 1;
+}
+.distintivo h2 {
+  margin-bottom: 0.25rem;
+}
+.distintivo p {
+  margin: 0.25rem 0 0;
+}
+.progreso {
+  height: 10px;
+  margin-top: 0.75rem;
+  border-radius: 999px;
+  background: var(--gris-claro);
+  overflow: hidden;
+}
+.progreso span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--verde), #34d399);
+}

@@ -1,0 +1,160 @@
+<nav class="migas" aria-label="Ruta">
+  <a routerLink="/comercio/mis-ofertas">Mis ofertas</a> <span aria-hidden="true">›</span>
+  <span>Publicar</span>
+</nav>
+<app-page-header
+  titulo="Publicar oferta"
+  subtitulo="Cuéntale a tus vecinos qué te sobró hoy. Toma menos de un minuto."
+/>
+
+@if (comercio.isLoading()) {
+  <app-spinner />
+} @else {
+  <app-aviso-cuenta [comercio]="comercio.value()" />
+
+  <form class="tarjeta po" [formGroup]="form" (ngSubmit)="publicar()" novalidate>
+    <fieldset [disabled]="!puedePublicar() || enviando()">
+      <h2>Producto</h2>
+      <div class="campo">
+        <label for="titulo">Nombre del producto</label>
+        <input id="titulo" formControlName="titulo" placeholder="Ej. Pan francés (bolsa x10)" />
+        @if (invalido('titulo')) {
+          <small class="error">Escribe el nombre del producto.</small>
+        }
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label for="categoria">Categoría</label>
+          <select id="categoria" formControlName="categoria">
+            <option value="" disabled>Selecciona…</option>
+            @for (c of categorias; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+          @if (invalido('categoria')) {
+            <small class="error">Selecciona una categoría.</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="descripcion">Descripción <span class="texto-suave">(opcional)</span></label>
+          <input
+            id="descripcion"
+            formControlName="descripcion"
+            placeholder="Ingredientes, alérgenos, tamaño…"
+          />
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label for="cantidad">Cantidad (unidades)</label>
+          <input id="cantidad" type="number" min="1" step="1" formControlName="cantidad" />
+          @if (invalido('cantidad')) {
+            <small class="error">La cantidad debe ser al menos 1.</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="peso">Peso por unidad (kg)</label>
+          <input id="peso" type="number" min="0.01" step="0.05" formControlName="pesoUnitarioKg" />
+          @if (invalido('pesoUnitarioKg')) {
+            <small class="error">Indica el peso por unidad (kg).</small>
+          }
+        </div>
+      </div>
+
+      <h2>Precio</h2>
+      <div class="fila">
+        <div class="campo">
+          <label for="po">Precio original (S/)</label>
+          <input
+            id="po"
+            type="number"
+            min="0.01"
+            step="0.10"
+            formControlName="precioOriginal"
+            placeholder="10.00"
+          />
+          @if (invalido('precioOriginal')) {
+            <small class="error">Indica el precio original.</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="pd">Precio con descuento (S/)</label>
+          <input
+            id="pd"
+            type="number"
+            min="0"
+            step="0.10"
+            formControlName="precioDescuento"
+            placeholder="4.00"
+          />
+          @if (invalido('precioDescuento')) {
+            <small class="error">Indica el precio con descuento.</small>
+          }
+        </div>
+      </div>
+      <div class="atajos">
+        <span class="texto-suave">Descuento rápido:</span>
+        @for (p of [30, 50, 60, 70]; track p) {
+          <button
+            type="button"
+            class="btn btn--secundario btn--sm"
+            (click)="aplicarDescuento(p)"
+            [disabled]="!form.controls.precioOriginal.value"
+          >
+            -{{ p }}%
+          </button>
+        }
+        @if (descuentoPct(); as d) {
+          <span class="pct">= {{ d }}% de descuento</span>
+        }
+      </div>
+      @if (form.hasError('precio') && form.controls.precioDescuento.touched) {
+        <small class="error">El precio con descuento debe ser menor al precio original.</small>
+      }
+
+      <h2>Vencimiento y recojo</h2>
+      <div class="fila fila--3">
+        <div class="campo">
+          <label for="vence">Fecha de vencimiento</label>
+          <input id="vence" type="date" [min]="hoy" formControlName="venceEl" />
+          @if (invalido('venceEl')) {
+            <small class="error">Completa la fecha de vencimiento para publicar.</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="desde">Recojo desde</label>
+          <input id="desde" type="datetime-local" formControlName="recojoDesde" />
+        </div>
+        <div class="campo">
+          <label for="hasta">Recojo hasta</label>
+          <input id="hasta" type="datetime-local" formControlName="recojoHasta" />
+        </div>
+      </div>
+      @if (form.hasError('ventana')) {
+        <small class="error">La hora límite debe ser posterior a la hora de inicio.</small>
+      }
+      @if (form.hasError('ventanaPasada')) {
+        <small class="error">La ventana de recojo ya terminó.</small>
+      }
+      <p class="nota">
+        ℹ️ Si nadie lo reserva, 15 minutos antes del cierre se ofrece automáticamente como donación
+        a una organización cercana.
+      </p>
+
+      <div class="po__pie">
+        <p class="texto-suave">
+          Total a rescatar: <strong>{{ pesoTotal().toFixed(1) }} kg</strong>
+          @if (form.controls.precioDescuento.value != null && form.controls.cantidad.value) {
+            · ingresos posibles:
+            <strong>{{
+              form.controls.precioDescuento.value! * form.controls.cantidad.value! | soles
+            }}</strong>
+          }
+        </p>
+        <button type="submit" class="btn btn--primario">
+          {{ enviando() ? 'Publicando…' : 'Publicar oferta' }}
+        </button>
+      </div>
+    </fieldset>
+  </form>
+}

@@ -1,0 +1,110 @@
+.af {
+  width: 100%;
+  max-width: 440px;
+}
+.af--ancho {
+  max-width: 640px;
+}
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+}
+form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.af__pie {
+  text-align: center;
+  margin: 1.25rem 0 0;
+}
+.con-accion {
+  position: relative;
+}
+.con-accion input {
+  padding-right: 4.5rem;
+}
+.con-accion .enlace {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.fila {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 560px) {
+  .fila {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+.rol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.875rem 0.5rem;
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.rol:hover {
+  border-color: var(--verde);
+}
+.rol--activo {
+  border-color: var(--verde);
+  background: #ecfdf5;
+}
+.rol__icono {
+  font-size: 1.5rem;
+}
+.rol__nombre {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.rol__desc {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.aviso {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.875rem;
+}
+.coords {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+  margin-top: 0.25rem;
+}
+
+.demo {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+}
+.demo summary {
+  cursor: pointer;
+  color: var(--texto-suave);
+}
+.demo__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}

@@ -1,0 +1,174 @@
+<nav class="migas" aria-label="Pasos de la reserva">
+  <a routerLink="/consumidor/ofertas">Ofertas</a>
+  <span aria-hidden="true">›</span>
+  <span [class.actual]="paso() === 'oferta'">Detalle</span>
+  <span aria-hidden="true">›</span>
+  <span [class.actual]="paso() === 'pago'">Pago</span>
+  <span aria-hidden="true">›</span>
+  <span [class.actual]="paso() === 'listo'">Código</span>
+</nav>
+
+@if (oferta.isLoading()) {
+  <app-spinner />
+} @else if (oferta.error()) {
+  <div class="tarjeta centro">
+    <p>No encontramos esta oferta. Puede que ya no esté disponible.</p>
+    <a class="btn btn--primario" routerLink="/consumidor/ofertas">Ver otras ofertas</a>
+  </div>
+} @else if (oferta.value(); as o) {
+  @switch (paso()) {
+    @case ('oferta') {
+      <article class="detalle">
+        <div class="detalle__foto" aria-hidden="true">🛍️</div>
+        <div class="tarjeta detalle__info">
+          <span class="chip-desc">-{{ o.precioOriginal | descuento: o.precioDescuento }}%</span>
+          <h1>{{ o.titulo }}</h1>
+          <p class="comercio">
+            🏪 {{ o.comercioNombre }}
+            @if (o.comercioDireccion) {
+              · {{ o.comercioDireccion }}
+            }
+          </p>
+          @if (o.descripcion) {
+            <p>{{ o.descripcion }}</p>
+          }
+
+          <p class="precio">
+            <strong>{{ o.precioDescuento | soles }}</strong> <s>{{ o.precioOriginal | soles }}</s>
+          </p>
+
+          <dl class="datos">
+            <div>
+              <dt>Categoría</dt>
+              <dd>{{ o.categoria }}</dd>
+            </div>
+            <div>
+              <dt>Disponibles</dt>
+              <dd>{{ o.cantidad }} {{ o.cantidad === 1 ? 'unidad' : 'unidades' }}</dd>
+            </div>
+            <div>
+              <dt>Peso aprox.</dt>
+              <dd>{{ o.pesoUnitarioKg | kg }} c/u</dd>
+            </div>
+            <div>
+              <dt>Vence</dt>
+              <dd class="texto-alerta">{{ o.venceEl | fechaExacta: 'dia' }}</dd>
+            </div>
+            <div class="datos__ancho">
+              <dt>Ventana de recojo</dt>
+              <dd [class.texto-alerta]="minutosParaCerrar() <= 60">
+                {{ o.recojoDesde | fechaExacta }} – {{ o.recojoHasta | fechaExacta: 'hora' }}
+              </dd>
+            </div>
+          </dl>
+
+          @if (disponible()) {
+            <div class="cantidad">
+              <span>Cantidad</span>
+              <div class="stepper">
+                <button
+                  type="button"
+                  (click)="cambiarCantidad(-1)"
+                  [disabled]="cantidad() <= 1"
+                  aria-label="Quitar uno"
+                >
+                  −
+                </button>
+                <output aria-live="polite">{{ cantidad() }}</output>
+                <button
+                  type="button"
+                  (click)="cambiarCantidad(1)"
+                  [disabled]="cantidad() >= o.cantidad"
+                  aria-label="Agregar uno"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn--primario btn--bloque" (click)="irAPago()">
+              Reservar por {{ total() | soles }}
+            </button>
+            <p class="ahorro">Ahorras {{ ahorro() | soles }} 🎉</p>
+          } @else {
+            <p class="no-disponible">Esta oferta ya no está disponible para reservar.</p>
+          }
+        </div>
+      </article>
+    }
+
+    @case ('pago') {
+      <section class="tarjeta pago">
+        <h1>Pago</h1>
+        <div class="resumen">
+          <span>{{ cantidad() }} × {{ o.titulo }}</span>
+          <strong>{{ total() | soles }}</strong>
+        </div>
+
+        <fieldset class="metodos">
+          <legend>Método de pago</legend>
+          @for (m of metodos; track m.valor) {
+            <label class="metodo" [class.metodo--activo]="metodo() === m.valor">
+              <input
+                type="radio"
+                name="metodo"
+                [value]="m.valor"
+                [checked]="metodo() === m.valor"
+                (change)="metodo.set(m.valor)"
+              />
+              <span aria-hidden="true">{{ m.icono }}</span> {{ m.nombre }}
+            </label>
+          }
+        </fieldset>
+
+        @if (errorPago(); as err) {
+          <p class="error-pago" role="alert">⚠️ {{ err }}</p>
+        }
+
+        <div class="pago__acciones">
+          <button
+            type="button"
+            class="btn btn--secundario"
+            (click)="paso.set('oferta')"
+            [disabled]="pagando()"
+          >
+            Volver
+          </button>
+          <button type="button" class="btn btn--primario" (click)="pagar()" [disabled]="pagando()">
+            {{ pagando() ? 'Procesando…' : 'Pagar ' + (total() | soles) }}
+          </button>
+        </div>
+        <p class="texto-suave nota">Pago de prueba: no se realiza ningún cobro real.</p>
+      </section>
+    }
+
+    @case ('listo') {
+      @if (reserva(); as r) {
+        <section class="tarjeta listo">
+          <p class="listo__icono" aria-hidden="true">🎉</p>
+          <h1>¡Reserva confirmada!</h1>
+          <p>
+            Muestra este código en <strong>{{ r.comercioNombre }}</strong> para recoger tu pedido.
+          </p>
+          <button
+            type="button"
+            class="codigo"
+            (click)="copiarCodigo(r.codigo)"
+            title="Copiar código"
+          >
+            {{ r.codigo }}
+          </button>
+          <p class="texto-alerta">
+            Recoge {{ r.recojoDesde | fechaExacta }} – {{ r.recojoHasta | fechaExacta: 'hora' }}
+          </p>
+          <p class="texto-suave">
+            Pagaste {{ r.monto | soles }} · {{ r.cantidad }} × {{ r.ofertaTitulo }}
+          </p>
+          <div class="listo__acciones">
+            <a class="btn btn--primario" routerLink="/consumidor/reservas">Ver mis reservas</a>
+            <a class="btn btn--secundario" routerLink="/consumidor/ofertas">Seguir buscando</a>
+          </div>
+        </section>
+      }
+    }
+  }
+}

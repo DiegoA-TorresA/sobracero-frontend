@@ -1,0 +1,94 @@
+<app-page-header
+  titulo="Mis reservas"
+  subtitulo="Muestra tu código en el local para recoger tu pedido."
+>
+  <button type="button" class="btn btn--secundario btn--sm" (click)="reservas.reload()">
+    ↻ Actualizar
+  </button>
+</app-page-header>
+
+<div class="pestanas" role="tablist">
+  <button
+    type="button"
+    role="tab"
+    [attr.aria-selected]="pestana() === 'activas'"
+    [class.activa]="pestana() === 'activas'"
+    (click)="pestana.set('activas')"
+  >
+    Por recoger <span class="cuenta">{{ activas().length }}</span>
+  </button>
+  <button
+    type="button"
+    role="tab"
+    [attr.aria-selected]="pestana() === 'historial'"
+    [class.activa]="pestana() === 'historial'"
+    (click)="pestana.set('historial')"
+  >
+    Historial <span class="cuenta">{{ historial().length }}</span>
+  </button>
+</div>
+
+@if (reservas.isLoading()) {
+  <app-spinner />
+} @else {
+  <div class="lista">
+    @for (r of lista(); track r.id) {
+      <article class="reserva" [class.reserva--activa]="r.estado === 'PAGADA'">
+        <div class="reserva__info">
+          <div class="reserva__cabecera">
+            <h2>{{ r.cantidad }} × {{ r.ofertaTitulo }}</h2>
+            <app-estado-badge [estado]="r.estado" />
+          </div>
+          <p class="texto-suave">
+            🏪 {{ r.comercioNombre }}
+            @if (r.comercioDireccion) {
+              · {{ r.comercioDireccion }}
+            }
+          </p>
+          <p
+            class="ventana"
+            [class.texto-alerta]="r.estado === 'PAGADA' && minutosRestantes(r) <= 30"
+          >
+            ⏰ {{ r.recojoDesde | fechaExacta }} – {{ r.recojoHasta | fechaExacta: 'hora' }}
+            @if (r.estado === 'PAGADA' && minutosRestantes(r) > 0 && minutosRestantes(r) <= 30) {
+              · ¡cierra en {{ minutosRestantes(r) }} min!
+            }
+          </p>
+          <p class="monto">{{ r.monto | soles }}</p>
+        </div>
+        @if (r.estado === 'PAGADA') {
+          <button
+            type="button"
+            class="codigo"
+            (click)="copiar(r.codigo)"
+            [attr.aria-label]="'Código de reserva ' + r.codigo + '. Copiar'"
+          >
+            <span class="codigo__etiqueta">Código de reserva</span>
+            <span class="codigo__valor">{{ r.codigo }}</span>
+          </button>
+        } @else {
+          <p class="codigo-usado">{{ r.codigo }}</p>
+        }
+      </article>
+    } @empty {
+      @if (pestana() === 'activas') {
+        <app-empty-state
+          icono="🧾"
+          titulo="No tienes reservas por recoger"
+          texto="Reserva una oferta cerca de ti y aparecerá aquí con tu código."
+        >
+          <a class="btn btn--primario" routerLink="/consumidor/ofertas">Buscar ofertas</a>
+        </app-empty-state>
+      } @else {
+        <app-empty-state icono="📜" titulo="Aún no tienes historial" />
+      }
+    }
+  </div>
+
+  @if (ahorroRecogidas() > 0) {
+    <p class="impacto">
+      🌱 Llevas {{ ahorroRecogidas() | soles }} en compras rescatadas. ¡Gracias por no dejar que se
+      pierda comida!
+    </p>
+  }
+}

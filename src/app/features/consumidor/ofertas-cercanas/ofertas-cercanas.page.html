@@ -1,0 +1,122 @@
+<app-page-header
+  titulo="Ofertas cercanas"
+  subtitulo="Comida en buen estado con descuento, cerca de ti."
+>
+  <div class="conmutador" role="tablist" aria-label="Vista">
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="vista() === 'lista'"
+      [class.activo]="vista() === 'lista'"
+      (click)="vista.set('lista')"
+    >
+      ☰ Lista
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="vista() === 'mapa'"
+      [class.activo]="vista() === 'mapa'"
+      (click)="vista.set('mapa')"
+    >
+      🗺️ Mapa
+    </button>
+  </div>
+</app-page-header>
+
+<section class="filtros" aria-label="Filtros">
+  <label class="filtro">
+    <span>Distancia</span>
+    <select [ngModel]="radioKm()" (ngModelChange)="radioKm.set(+$event)">
+      @for (r of radios; track r) {
+        <option [ngValue]="r">Hasta {{ etiquetaRadio(r) }}</option>
+      }
+    </select>
+  </label>
+  <label class="filtro">
+    <span>Categoría</span>
+    <select [ngModel]="categoria()" (ngModelChange)="categoria.set($event)">
+      <option value="">Todas</option>
+      @for (c of categorias; track c) {
+        <option [value]="c">{{ c }}</option>
+      }
+    </select>
+  </label>
+  <label class="filtro">
+    <span>Descuento</span>
+    <select [ngModel]="descuentoMin()" (ngModelChange)="descuentoMin.set(+$event)">
+      @for (d of descuentos; track d) {
+        <option [ngValue]="d">{{ d === 0 ? 'Cualquiera' : 'Desde ' + d + '%' }}</option>
+      }
+    </select>
+  </label>
+  <label class="filtro">
+    <span>Recojo</span>
+    <select [ngModel]="franja()" (ngModelChange)="franja.set($event)">
+      <option value="todas">Cualquier hora</option>
+      <option value="tarde">Hasta las 6 p. m.</option>
+      <option value="noche">Después de las 6 p. m.</option>
+    </select>
+  </label>
+  @if (hayFiltros()) {
+    <button type="button" class="enlace filtros__limpiar" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+  }
+</section>
+
+@if (aproximada()) {
+  <p class="aviso-ubicacion">
+    📍 No pudimos usar tu ubicación; mostramos ofertas alrededor de San Miguel, Lima.
+  </p>
+}
+
+@if (!ubicacion() || ofertas.isLoading()) {
+  <app-spinner texto="Buscando ofertas cerca de ti…" />
+} @else {
+  <div class="resultados" [class.resultados--mapa]="vista() === 'mapa'">
+    <div class="resultados__lista">
+      <p class="conteo">
+        {{ filtradas().length }} {{ filtradas().length === 1 ? 'oferta' : 'ofertas' }} a
+        {{ etiquetaRadio(radioKm()) }} o menos
+      </p>
+      @for (o of filtradas(); track o.id) {
+        <app-tarjeta-oferta
+          [attr.id]="'oferta-' + o.id"
+          [oferta]="o"
+          [activa]="seleccionada() === o.id"
+        />
+      } @empty {
+        <app-empty-state
+          icono="🔎"
+          titulo="No hay ofertas con estos filtros"
+          texto="Prueba ampliando el radio de búsqueda o quitando algún filtro. Los comercios publican sobre todo por la tarde."
+        >
+          <div class="vacio__acciones">
+            @if (radioKm() < 10) {
+              <button type="button" class="btn btn--primario" (click)="ampliarRadio()">
+                Ampliar radio
+              </button>
+            }
+            @if (hayFiltros()) {
+              <button type="button" class="btn btn--secundario" (click)="limpiarFiltros()">
+                Quitar filtros
+              </button>
+            }
+          </div>
+        </app-empty-state>
+      }
+    </div>
+    <div class="resultados__mapa">
+      @if (ubicacion(); as u) {
+        <app-mapa-ofertas
+          [centro]="u"
+          [radioKm]="radioKm()"
+          [ofertas]="filtradas()"
+          [seleccionada]="seleccionada()"
+          (elegir)="elegirEnMapa($event)"
+        />
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,64 @@
+.cc {
+  display: grid;
+  gap: 1rem;
+  max-width: 960px;
+}
+form {
+  display: grid;
+  gap: 1rem;
+}
+.cc__label {
+  font-weight: 600;
+}
+.cc__input {
+  min-height: 72px !important;
+  text-align: center;
+  font:
+    800 2rem/1 ui-monospace,
+    'SF Mono',
+    Consolas,
+    monospace !important;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.resultado {
+  margin: 0;
+  padding: 1rem;
+  border-radius: var(--radio);
+}
+.resultado p {
+  margin: 0.25rem 0 0;
+}
+.resultado--ok {
+  background: #ecfdf5;
+  color: var(--verde-oscuro);
+  border: 1px solid #a7f3d0;
+}
+.resultado__titulo {
+  margin: 0 !important;
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+.resultado--error {
+  background: #fef2f2;
+  color: #991b1b;
+  font-weight: 600;
+}
+h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.0625rem;
+}
+.fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: 0.9375rem;
+}
+@media (min-width: 900px) {
+  .cc {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}

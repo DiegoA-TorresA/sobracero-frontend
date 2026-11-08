@@ -1,0 +1,227 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--fondo);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 1rem;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+}
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  color: var(--texto);
+  text-decoration: none;
+}
+.marca strong {
+  color: var(--verde);
+}
+.marca__logo {
+  font-size: 1.5rem;
+}
+
+.topbar__acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.icono-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.icono-btn:hover {
+  background: var(--gris-claro);
+}
+.contador {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--rojo);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.perfil {
+  position: relative;
+}
+.perfil__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: var(--radio);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+.perfil__btn:hover {
+  background: var(--gris-claro);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+.perfil__texto {
+  display: none;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.perfil__nombre {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.perfil__rol {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+.perfil__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 220px;
+  padding: 0.5rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-2);
+}
+.perfil__correo {
+  margin: 0.25rem 0.5rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+  word-break: break-all;
+}
+.perfil__menu button {
+  width: 100%;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--rojo);
+  font-weight: 600;
+}
+.perfil__menu button:hover {
+  background: #fef2f2;
+}
+
+.cuerpo {
+  display: flex;
+}
+.lateral {
+  display: none;
+}
+.contenido {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem 1rem 6rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  background: var(--superficie);
+  border-top: 1px solid var(--borde);
+  padding: 0.25rem 0 calc(0.25rem + env(safe-area-inset-bottom));
+}
+.inferior a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.375rem 0.25rem;
+  flex: 1;
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-size: 0.6875rem;
+  text-align: center;
+}
+.inferior a.activo {
+  color: var(--verde-oscuro);
+  font-weight: 600;
+}
+.inferior__icono {
+  font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .perfil__texto {
+    display: flex;
+  }
+  .inferior {
+    display: none;
+  }
+  .lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    width: 240px;
+    flex-shrink: 0;
+    padding: 1rem 0.75rem;
+    background: var(--superficie);
+    border-right: 1px solid var(--borde);
+  }
+  .lateral a {
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radio);
+    color: var(--texto);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .lateral a:hover {
+    background: var(--gris-claro);
+  }
+  .lateral a.activo {
+    background: #d1fae5;
+    color: var(--verde-oscuro);
+    font-weight: 600;
+  }
+  .contenido {
+    padding: 2rem;
+  }
+}

@@ -1,0 +1,26 @@
+# Reemplaza @usuarioN por el usuario de GitHub de cada desarrollador.
+# GitHub pedirá automáticamente la revisión del dueño cuando un PR toque su carpeta.
+
+# Parte 1 — Core, autenticación, layout, shared (y archivos raíz)
+*                                   @usuario1
+/src/app/core/                      @usuario1
+/src/app/shared/                    @usuario1
+/src/app/layout/                    @usuario1
+/src/app/features/auth/             @usuario1
+/src/app/features/notificaciones/   @usuario1
+
+# Parte 2 — Landing e impacto público
+/src/app/features/landing/          @usuario2
+
+# Parte 3 — Consumidor
+/src/app/features/consumidor/       @usuario3
+
+# Parte 4 — Comercio
+/src/app/features/comercio/         @usuario4
+
+# Parte 5 — Organización social
+/src/app/features/organizacion/     @usuario5
+
+# Parte 6 — Administración e impacto
+/src/app/features/admin/            @usuario6
+/src/app/features/impacto/          @usuario6

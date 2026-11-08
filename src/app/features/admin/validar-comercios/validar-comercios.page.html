@@ -1,0 +1,149 @@
+<app-page-header
+  titulo="Validación de comercios"
+  subtitulo="Revisa el RUC y la dirección antes de habilitar la publicación de ofertas."
+>
+  <input
+    class="buscar"
+    type="search"
+    placeholder="Buscar por nombre, RUC o distrito"
+    [ngModel]="busqueda()"
+    (ngModelChange)="busqueda.set($event)"
+    aria-label="Buscar comercio"
+  />
+</app-page-header>
+
+<app-filtro-estado [(valor)]="filtro" [conteos]="conteos()" />
+
+@if (comercios.isLoading()) {
+  <app-spinner />
+} @else {
+  <div class="lista">
+    @for (c of filtrados(); track c.id) {
+      <article class="solicitud">
+        <div class="solicitud__info">
+          <div class="solicitud__cab">
+            <h2>{{ c.nombre }}</h2>
+            <app-estado-badge [estado]="c.estado" />
+            <app-estado-badge [estado]="c.plan" />
+          </div>
+          <dl class="datos">
+            <div>
+              <dt>RUC</dt>
+              <dd class="mono">{{ c.ruc ?? '—' }}</dd>
+            </div>
+            <div>
+              <dt>Dirección</dt>
+              <dd>
+                {{ c.direccion ?? '—' }}
+                @if (c.distrito) {
+                  , {{ c.distrito }}
+                }
+              </dd>
+            </div>
+            <div>
+              <dt>Ubicación</dt>
+              <dd>
+                <a
+                  [href]="
+                    'https://www.openstreetmap.org/?mlat=' +
+                    c.latitud +
+                    '&mlon=' +
+                    c.longitud +
+                    '#map=17/' +
+                    c.latitud +
+                    '/' +
+                    c.longitud
+                  "
+                  target="_blank"
+                  rel="noopener"
+                  >Ver en mapa</a
+                >
+              </dd>
+            </div>
+            @if (c.creadoEn) {
+              <div>
+                <dt>Solicitud</dt>
+                <dd>{{ c.creadoEn | fechaExacta }}</dd>
+              </div>
+            }
+          </dl>
+          @if (c.motivoRechazo) {
+            <p class="motivo">Motivo de rechazo: {{ c.motivoRechazo }}</p>
+          }
+        </div>
+        <div class="solicitud__acciones">
+          @if (c.estado !== 'VALIDADA') {
+            <button
+              type="button"
+              class="btn btn--primario btn--sm"
+              (click)="validar(c)"
+              [disabled]="procesando() === c.id"
+            >
+              ✔ Validar
+            </button>
+          }
+          @if (c.estado !== 'RECHAZADA') {
+            <button
+              type="button"
+              class="btn btn--peligro btn--sm"
+              (click)="abrirRechazo(c)"
+              [disabled]="procesando() === c.id"
+            >
+              ✖ Rechazar
+            </button>
+          }
+          <label class="plan">
+            <span>Plan</span>
+            <select
+              [ngModel]="c.plan"
+              (ngModelChange)="cambiarPlan(c, $event)"
+              [disabled]="procesando() === c.id"
+            >
+              <option value="GRATIS">Gratis</option>
+              <option value="PREMIUM">Premium</option>
+            </select>
+          </label>
+        </div>
+      </article>
+    } @empty {
+      <app-empty-state
+        icono="🏪"
+        titulo="No hay comercios en esta lista"
+        [texto]="filtro() === 'PENDIENTE' ? '¡Al día! No hay solicitudes por revisar.' : undefined"
+      />
+    }
+  </div>
+}
+
+<app-dialogo titulo="Rechazar comercio" [abierto]="!!aRechazar()" (cerrar)="aRechazar.set(null)">
+  @if (aRechazar(); as c) {
+    <p>
+      Indica el motivo. <strong>{{ c.nombre }}</strong> lo verá en sus notificaciones.
+    </p>
+    <div class="motivos">
+      @for (m of motivosRapidos; track m) {
+        <button type="button" class="chip" (click)="motivo.set(m)">{{ m }}</button>
+      }
+    </div>
+    <textarea
+      rows="3"
+      [ngModel]="motivo()"
+      (ngModelChange)="motivo.set($event)"
+      placeholder="Motivo del rechazo"
+      aria-label="Motivo del rechazo"
+    ></textarea>
+    <div class="dlg-acciones">
+      <button type="button" class="btn btn--secundario" (click)="aRechazar.set(null)">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn--peligro"
+        (click)="confirmarRechazo()"
+        [disabled]="!motivo().trim()"
+      >
+        Rechazar
+      </button>
+    </div>
+  }
+</app-dialogo>

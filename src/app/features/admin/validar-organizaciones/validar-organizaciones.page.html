@@ -1,0 +1,145 @@
+<app-page-header
+  titulo="Validación de organizaciones"
+  subtitulo="Solo las organizaciones validadas reciben donaciones. Marca la calificación SUNAT si está vigente."
+/>
+
+<app-filtro-estado [(valor)]="filtro" [conteos]="conteos()" />
+
+@if (orgs.isLoading()) {
+  <app-spinner />
+} @else {
+  <div class="lista">
+    @for (o of filtradas(); track o.id) {
+      <article class="solicitud">
+        <div>
+          <div class="solicitud__cab">
+            <h2>{{ o.nombre }}</h2>
+            <app-estado-badge [estado]="o.estado" />
+            @if (o.deducibleSunat) {
+              <span class="sunat">🧾 SUNAT</span>
+            }
+          </div>
+          <dl class="datos">
+            <div>
+              <dt>Dirección</dt>
+              <dd>{{ o.direccion ?? '—' }}</dd>
+            </div>
+            <div>
+              <dt>Capacidad diaria</dt>
+              <dd>{{ o.capacidadDiariaKg != null ? (o.capacidadDiariaKg | kg) : 'Sin límite' }}</dd>
+            </div>
+            <div>
+              <dt>Ubicación</dt>
+              <dd>
+                <a
+                  [href]="
+                    'https://www.openstreetmap.org/?mlat=' +
+                    o.latitud +
+                    '&mlon=' +
+                    o.longitud +
+                    '#map=17/' +
+                    o.latitud +
+                    '/' +
+                    o.longitud
+                  "
+                  target="_blank"
+                  rel="noopener"
+                  >Ver en mapa</a
+                >
+              </dd>
+            </div>
+            @if (o.creadoEn) {
+              <div>
+                <dt>Solicitud</dt>
+                <dd>{{ o.creadoEn | fechaExacta }}</dd>
+              </div>
+            }
+          </dl>
+          @if (o.motivoRechazo) {
+            <p class="motivo">Motivo de rechazo: {{ o.motivoRechazo }}</p>
+          }
+        </div>
+        <div class="solicitud__acciones">
+          <button
+            type="button"
+            class="btn btn--primario btn--sm"
+            (click)="abrirValidacion(o)"
+            [disabled]="procesando() === o.id"
+          >
+            {{ o.estado === 'VALIDADA' ? 'Editar SUNAT' : '✔ Validar' }}
+          </button>
+          @if (o.estado !== 'RECHAZADA') {
+            <button
+              type="button"
+              class="btn btn--peligro btn--sm"
+              (click)="abrirRechazo(o)"
+              [disabled]="procesando() === o.id"
+            >
+              ✖ Rechazar
+            </button>
+          }
+        </div>
+      </article>
+    } @empty {
+      <app-empty-state icono="🤝" titulo="No hay organizaciones en esta lista" />
+    }
+  </div>
+}
+
+<app-dialogo titulo="Validar organización" [abierto]="!!aValidar()" (cerrar)="aValidar.set(null)">
+  @if (aValidar(); as o) {
+    <p>
+      Se habilitará a <strong>{{ o.nombre }}</strong> para recibir donaciones.
+    </p>
+    <label class="check">
+      <input type="checkbox" [ngModel]="sunat()" (ngModelChange)="sunat.set($event)" />
+      Tiene calificación vigente como entidad perceptora de donaciones (SUNAT). Sus donaciones serán
+      deducibles.
+    </label>
+    <div class="dlg-acciones">
+      <button type="button" class="btn btn--secundario" (click)="aValidar.set(null)">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn--primario" (click)="confirmarValidacion()">
+        Validar
+      </button>
+    </div>
+  }
+</app-dialogo>
+
+<app-dialogo
+  titulo="Rechazar organización"
+  [abierto]="!!aRechazar()"
+  (cerrar)="aRechazar.set(null)"
+>
+  @if (aRechazar(); as o) {
+    <p>
+      Indica el motivo. <strong>{{ o.nombre }}</strong> lo verá en sus notificaciones.
+    </p>
+    <div class="motivos">
+      @for (m of motivosRapidos; track m) {
+        <button type="button" class="chip" (click)="motivo.set(m)">{{ m }}</button>
+      }
+    </div>
+    <textarea
+      rows="3"
+      [ngModel]="motivo()"
+      (ngModelChange)="motivo.set($event)"
+      placeholder="Motivo del rechazo"
+      aria-label="Motivo del rechazo"
+    ></textarea>
+    <div class="dlg-acciones">
+      <button type="button" class="btn btn--secundario" (click)="aRechazar.set(null)">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn--peligro"
+        (click)="confirmarRechazo()"
+        [disabled]="!motivo().trim()"
+      >
+        Rechazar
+      </button>
+    </div>
+  }
+</app-dialogo>

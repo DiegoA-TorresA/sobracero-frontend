@@ -1,0 +1,117 @@
+.pestanas {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--borde);
+}
+.pestanas button {
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+.pestanas button.activa {
+  color: var(--verde-oscuro);
+  border-bottom-color: var(--verde);
+}
+.cuenta {
+  display: inline-block;
+  min-width: 1.5rem;
+  margin-left: 0.25rem;
+  padding: 0 0.375rem;
+  border-radius: 999px;
+  background: var(--gris-claro);
+  font-size: 0.75rem;
+}
+
+.lista {
+  display: grid;
+  gap: 0.75rem;
+}
+.reserva {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+.reserva--activa {
+  border-color: #a7f3d0;
+}
+.reserva__cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: start;
+}
+h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+.reserva p {
+  margin: 0.25rem 0 0;
+}
+.ventana {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.monto {
+  font-weight: 700;
+  color: var(--verde-oscuro);
+}
+
+.codigo {
+  display: grid;
+  gap: 0.25rem;
+  place-items: center;
+  padding: 1rem;
+  border: 2px dashed var(--verde);
+  border-radius: var(--radio);
+  background: #ecfdf5;
+  cursor: copy;
+  font: inherit;
+}
+.codigo__etiqueta {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--verde-oscuro);
+  font-weight: 600;
+}
+.codigo__valor {
+  font:
+    800 1.75rem/1 ui-monospace,
+    'SF Mono',
+    Consolas,
+    monospace;
+  letter-spacing: 0.1em;
+  color: var(--verde-oscuro);
+}
+.codigo-usado {
+  align-self: center;
+  font-family: ui-monospace, monospace;
+  color: var(--texto-suave);
+  text-decoration: line-through;
+}
+
+.impacto {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: var(--radio);
+  background: #ecfdf5;
+  color: var(--verde-oscuro);
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .reserva {
+    grid-template-columns: 1fr 240px;
+    align-items: center;
+  }
+}

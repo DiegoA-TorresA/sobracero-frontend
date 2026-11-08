@@ -1,0 +1,67 @@
+<header class="topbar">
+  <a class="marca" [routerLink]="sesion.rutaInicio()">
+    <span class="marca__logo" aria-hidden="true">🍃</span>
+    <span>Sobra<strong>Cero</strong></span>
+  </a>
+
+  <div class="topbar__acciones">
+    <button
+      type="button"
+      class="icono-btn"
+      (click)="irANotificaciones()"
+      [attr.aria-label]="'Notificaciones, ' + notis.sinLeer() + ' sin leer'"
+    >
+      🔔
+      @if (notis.sinLeer() > 0) {
+        <span class="contador">{{ notis.sinLeer() > 9 ? '9+' : notis.sinLeer() }}</span>
+      }
+    </button>
+
+    <div class="perfil">
+      <button
+        type="button"
+        class="perfil__btn"
+        (click)="menuPerfilAbierto.set(!menuPerfilAbierto())"
+        [attr.aria-expanded]="menuPerfilAbierto()"
+      >
+        <span class="avatar">{{ iniciales() }}</span>
+        <span class="perfil__texto">
+          <span class="perfil__nombre">{{ sesion.usuario()?.nombre }}</span>
+          <span class="perfil__rol">{{ nombreRol() }}</span>
+        </span>
+      </button>
+      @if (menuPerfilAbierto()) {
+        <div class="perfil__menu" role="menu">
+          <p class="perfil__correo">{{ sesion.usuario()?.correo }}</p>
+          <button type="button" role="menuitem" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
+      }
+    </div>
+  </div>
+</header>
+
+<div class="cuerpo">
+  <nav class="lateral" aria-label="Menú principal">
+    @for (item of menu(); track item.ruta) {
+      <a [routerLink]="item.ruta" routerLinkActive="activo">
+        <span aria-hidden="true">{{ item.icono }}</span> {{ item.etiqueta }}
+      </a>
+    }
+    <a routerLink="/notificaciones" routerLinkActive="activo">
+      <span aria-hidden="true">🔔</span> Notificaciones
+    </a>
+  </nav>
+
+  <main class="contenido">
+    <router-outlet />
+  </main>
+</div>
+
+<nav class="inferior" aria-label="Menú móvil">
+  @for (item of menu().slice(0, 4); track item.ruta) {
+    <a [routerLink]="item.ruta" routerLinkActive="activo">
+      <span class="inferior__icono" aria-hidden="true">{{ item.icono }}</span>
+      <span class="inferior__texto">{{ item.etiqueta }}</span>
+    </a>
+  }
+</nav>

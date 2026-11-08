@@ -1,0 +1,98 @@
+<app-page-header titulo="Mis ofertas" subtitulo="Tu historial de ventas y donaciones.">
+  <a class="btn btn--primario" routerLink="/comercio/publicar">+ Publicar oferta</a>
+</app-page-header>
+
+<app-aviso-cuenta [comercio]="comercio.value()" />
+
+<dl class="resumen">
+  <div>
+    <dt>Ofertas</dt>
+    <dd>{{ resumen().publicadas }}</dd>
+  </div>
+  <div>
+    <dt>Activas ahora</dt>
+    <dd>{{ resumen().activas }}</dd>
+  </div>
+  <div>
+    <dt>Unidades reservadas</dt>
+    <dd>{{ resumen().vendidas }}</dd>
+  </div>
+  <div>
+    <dt>Ventas</dt>
+    <dd>{{ resumen().ingresos | soles }}</dd>
+  </div>
+</dl>
+
+<div class="filtros">
+  <div class="chips" role="group" aria-label="Filtrar por estado">
+    @for (e of estados; track e.valor) {
+      <button
+        type="button"
+        class="chip"
+        [class.chip--activo]="estado() === e.valor"
+        (click)="estado.set(e.valor)"
+      >
+        {{ e.texto }}
+      </button>
+    }
+  </div>
+  <label class="periodo">
+    <span class="visually-hidden">Periodo</span>
+    <select [ngModel]="periodo()" (ngModelChange)="periodo.set($event)">
+      <option value="hoy">Hoy</option>
+      <option value="7">Últimos 7 días</option>
+      <option value="30">Últimos 30 días</option>
+      <option value="todo">Todo el historial</option>
+    </select>
+  </label>
+</div>
+
+@if (ofertas.isLoading()) {
+  <app-spinner />
+} @else if (filtradas().length === 0) {
+  <app-empty-state
+    icono="🥖"
+    titulo="No hay ofertas en este filtro"
+    texto="Publica lo que te sobró hoy y empieza a recuperar costos."
+  >
+    <a class="btn btn--primario" routerLink="/comercio/publicar">Publicar oferta</a>
+  </app-empty-state>
+} @else {
+  <div class="tabla-scroll tarjeta tabla-caja">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Estado</th>
+          <th>Reservadas</th>
+          <th>Precio</th>
+          <th>Recojo</th>
+          <th>Vence</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (o of filtradas(); track o.id) {
+          <tr>
+            <td>
+              <strong>{{ o.titulo }}</strong
+              ><br /><span class="texto-suave">{{ o.categoria }}</span>
+            </td>
+            <td><app-estado-badge [estado]="o.estado" /></td>
+            <td>
+              {{ vendidas(o) }} / {{ o.cantidadInicial }}
+              <span class="barra"
+                ><span [style.width.%]="(vendidas(o) / o.cantidadInicial) * 100"></span
+              ></span>
+            </td>
+            <td>
+              {{ o.precioDescuento | soles }}
+              <s class="texto-suave">{{ o.precioOriginal | soles }}</s>
+            </td>
+            <td>{{ o.recojoDesde | fechaExacta }} – {{ o.recojoHasta | fechaExacta: 'hora' }}</td>
+            <td>{{ o.venceEl | fechaExacta: 'dia' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

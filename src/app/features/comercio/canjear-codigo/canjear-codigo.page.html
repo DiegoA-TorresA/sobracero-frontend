@@ -1,0 +1,54 @@
+<app-page-header
+  titulo="Canjear código"
+  subtitulo="Pide al cliente su código de reserva y confírmalo aquí al entregar el pedido."
+/>
+
+<div class="cc">
+  <form class="tarjeta" (ngSubmit)="canjear()">
+    <label for="codigo" class="cc__label">Código de reserva</label>
+    <input
+      id="codigo"
+      class="cc__input"
+      name="codigo"
+      autocomplete="off"
+      autocapitalize="characters"
+      spellcheck="false"
+      placeholder="SC-XXXXX"
+      maxlength="8"
+      [ngModel]="codigo()"
+      (ngModelChange)="normalizar($event)"
+    />
+    <button
+      type="submit"
+      class="btn btn--primario btn--bloque"
+      [disabled]="!codigo() || enviando()"
+    >
+      {{ enviando() ? 'Verificando…' : 'Confirmar recojo' }}
+    </button>
+
+    @if (error(); as e) {
+      <p class="resultado resultado--error" role="alert">✖ {{ e }}</p>
+    }
+    @if (ultimo(); as r) {
+      <div class="resultado resultado--ok" role="status">
+        <p class="resultado__titulo">✔ Recojo confirmado</p>
+        <p>{{ r.cantidad }} × {{ r.ofertaTitulo }} · {{ r.monto | soles }}</p>
+        <p class="texto-suave">Código {{ r.codigo }}</p>
+      </div>
+    }
+  </form>
+
+  <section class="tarjeta">
+    <h2>Entregados en esta sesión</h2>
+    @for (r of canjeados(); track r.id) {
+      <div class="fila">
+        <span
+          ><strong>{{ r.codigo }}</strong> · {{ r.cantidad }} × {{ r.ofertaTitulo }}</span
+        >
+        <span>{{ r.monto | soles }}</span>
+      </div>
+    } @empty {
+      <p class="texto-suave">Aún no confirmaste recojos.</p>
+    }
+  </section>
+</div>

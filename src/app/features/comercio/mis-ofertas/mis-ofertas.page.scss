@@ -1,0 +1,90 @@
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+}
+.resumen > div {
+  padding: 1rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.resumen dt {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+.resumen dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+@media (min-width: 768px) {
+  .resumen {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.chip {
+  min-height: 34px;
+  padding: 0 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;
+}
+.chip--activo {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: #fff;
+}
+.periodo select {
+  min-width: 200px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.tabla-caja {
+  padding: 0;
+  overflow: auto;
+}
+.barra {
+  display: block;
+  width: 80px;
+  height: 6px;
+  margin-top: 0.25rem;
+  border-radius: 3px;
+  background: var(--gris-claro);
+  overflow: hidden;
+}
+.barra span {
+  display: block;
+  height: 100%;
+  background: var(--verde);
+}
+td s {
+  margin-left: 0.25rem;
+  font-size: 0.8125rem;
+}

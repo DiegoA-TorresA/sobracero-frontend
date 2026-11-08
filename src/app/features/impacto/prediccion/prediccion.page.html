@@ -1,0 +1,62 @@
+<app-page-header
+  titulo="Predicción de excedentes"
+  subtitulo="Anticipa cuánto te sobrará mañana y publícalo a tiempo, con vida útil suficiente para venderse."
+/>
+
+@if (datos.isLoading()) {
+  <app-spinner texto="Analizando tu historial…" />
+} @else if (datos.value(); as d) {
+  @if (!d.premium) {
+    <app-banner-premium />
+  } @else if (d.prediccion; as p) {
+    @if (!p.disponible) {
+      <section class="tarjeta espera">
+        <h2>📊 Estamos aprendiendo de tu comercio</h2>
+        <p>{{ p.mensaje }}</p>
+        <div
+          class="progreso"
+          role="progressbar"
+          [attr.aria-valuenow]="p.diasHistorial"
+          aria-valuemin="0"
+          [attr.aria-valuemax]="minDias"
+        >
+          <span [style.width.%]="(p.diasHistorial / minDias) * 100"></span>
+        </div>
+        <p class="texto-suave">
+          {{ p.diasHistorial }} de {{ minDias }} días con ofertas publicadas.
+        </p>
+        <a class="btn btn--primario" routerLink="/comercio/publicar">Publicar oferta</a>
+      </section>
+    } @else {
+      <section class="tarjeta">
+        <div class="cab">
+          <h2>Para {{ p.fechaObjetivo ? (p.fechaObjetivo | fechaExacta: 'dia') : 'mañana' }}</h2>
+          <span class="texto-suave">Basado en {{ p.diasHistorial }} días de historial</span>
+        </div>
+        <ul class="pred">
+          @for (c of p.predicciones ?? []; track c.categoria) {
+            <li>
+              <div class="pred__fila">
+                <strong>{{ c.categoria }}</strong>
+                <span
+                  >~{{ c.unidadesEsperadas }} unid. · descuento sugerido
+                  <b>{{ c.descuentoSugeridoPct }}%</b></span
+                >
+              </div>
+              <div class="pred__barra">
+                <span [style.width.%]="(c.unidadesEsperadas / maxUnidades()) * 100"></span>
+              </div>
+            </li>
+          } @empty {
+            <li class="texto-suave">No esperamos excedentes para ese día de la semana. 🎉</li>
+          }
+        </ul>
+        <p class="nota">
+          Se calcula con el promedio de lo que te sobró los mismos días de la semana. Publica antes
+          del cierre para venderlo con más margen.
+        </p>
+        <a class="btn btn--primario" routerLink="/comercio/publicar">Publicar ahora</a>
+      </section>
+    }
+  }
+}

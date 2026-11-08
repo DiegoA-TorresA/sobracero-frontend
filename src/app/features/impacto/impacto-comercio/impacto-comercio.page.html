@@ -1,0 +1,103 @@
+<app-page-header titulo="Mi impacto" subtitulo="Lo que tu comercio evitó que se desperdicie.">
+  @if (premium()) {
+    <button
+      type="button"
+      class="btn btn--primario"
+      (click)="descargarReporte()"
+      [disabled]="descargando()"
+    >
+      {{ descargando() ? 'Generando…' : '⬇ Descargar reporte CSV' }}
+    </button>
+  }
+</app-page-header>
+
+@if (impacto.isLoading()) {
+  <app-spinner />
+} @else if (impacto.value(); as i) {
+  <div class="metricas">
+    <app-tarjeta-metrica
+      icono="🌱"
+      etiqueta="Kilos rescatados"
+      [valor]="f.kg(i.rescatadoKg)"
+      [detalle]="tasaRescate() + '% de lo que ofreciste'"
+      tono="verde"
+    />
+    <app-tarjeta-metrica
+      icono="💰"
+      etiqueta="Ingresos recuperados"
+      [valor]="f.soles(i.ingresos)"
+      detalle="Reservas pagadas y recogidas"
+    />
+    <app-tarjeta-metrica icono="🌍" etiqueta="CO₂ evitado" [valor]="f.kg(i.co2EvitadoKg)" />
+    <app-tarjeta-metrica
+      icono="🤝"
+      etiqueta="Donaciones entregadas"
+      [valor]="f.num(i.donacionesCompletadas)"
+      [detalle]="f.kg(i.donadoKg) + ' donados'"
+    />
+  </div>
+
+  @if (reparto(); as r) {
+    <section class="tarjeta reparto">
+      <h2>¿A dónde fueron tus excedentes?</h2>
+      <div
+        class="barra"
+        role="img"
+        [attr.aria-label]="
+          'Vendido ' +
+          f.kg(i.vendidoKg) +
+          ', donado ' +
+          f.kg(i.donadoKg) +
+          ', perdido ' +
+          f.kg(i.perdidoKg)
+        "
+      >
+        <span class="b-venta" [style.flex-grow]="r.vendido"></span>
+        <span class="b-dona" [style.flex-grow]="r.donado"></span>
+        <span class="b-pierde" [style.flex-grow]="r.perdido"></span>
+      </div>
+      <ul class="leyenda">
+        <li>
+          <i class="b-venta"></i>Vendido: <strong>{{ f.kg(i.vendidoKg) }}</strong>
+        </li>
+        <li>
+          <i class="b-dona"></i>Donado: <strong>{{ f.kg(i.donadoKg) }}</strong>
+        </li>
+        <li>
+          <i class="b-pierde"></i>Pérdida no evitada: <strong>{{ f.kg(i.perdidoKg) }}</strong>
+        </li>
+      </ul>
+    </section>
+  }
+
+  <section class="tarjeta distintivo" [class.distintivo--ok]="i.distintivo.otorgado">
+    <div class="medalla" aria-hidden="true">{{ i.distintivo.otorgado ? '🏅' : '🎖️' }}</div>
+    <div class="distintivo__texto">
+      <h2>Distintivo de empresa comprometida</h2>
+      <p>{{ i.distintivo.mensaje }}</p>
+      @if (premium() && !i.distintivo.otorgado) {
+        <div
+          class="progreso"
+          role="progressbar"
+          [attr.aria-valuenow]="i.distintivo.avancePct"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <span [style.width.%]="i.distintivo.avancePct"></span>
+        </div>
+        <p class="texto-suave">
+          {{ i.distintivo.avancePct }}% de {{ f.kg(i.distintivo.minKg) }} rescatados
+        </p>
+      }
+      @if (i.distintivo.otorgado) {
+        <p class="texto-suave">
+          Muéstralo en tu local, tus redes y tus reportes de sostenibilidad.
+        </p>
+      }
+    </div>
+  </section>
+
+  @if (!premium()) {
+    <app-banner-premium titulo="Descarga tu reporte y obtén el distintivo" />
+  }
+}
